@@ -17,6 +17,11 @@ clock = pg.time.Clock()
 # define screen height and width variables
 w, h = 1000, 600
 
+# define color tuples here
+magenta = (240, 10, 236)
+black = (0, 0, 0)
+white = (255, 255, 255)
+
 # create the display window
 display = pg.display.set_mode([w, h])
 
@@ -28,7 +33,14 @@ gatorPic = pg.image.load('alligator.png')
 gatorPic = pg.transform.scale(gatorPic, (550, 500))
 
 
+# function to quit game if quit button is pressed
+def game_quit():
+    pg.quit()
+
+
+# class to create title screen background
 class Background(pg.sprite.Sprite):
+    # constructor
     def __init__(self, background_pic, location):
         pg.sprite.Sprite.__init__(self)
 
@@ -37,32 +49,33 @@ class Background(pg.sprite.Sprite):
         self.box.left, self.box.top = location
 
 
-# function to display gator in center of the screen
-
-
-def button(text, x, y, width, height, color, presscolor, action=None):
+# function to define a button press, with dimensions, location, colors, and actions
+def button(text, x, y, width, height, presscolor, action=None):
     cursor = pg.mouse.get_pos()
     click = pg.mouse.get_pressed()
 
+    # button is being hovered over
     if x + width > cursor[0] > x and y + height > cursor[1] > y:
         pg.draw.rect(display, presscolor, (x, y, width, height))
-        if click[0] == 1 and action != None:
+        # button is pressed
+        if click[0] == 1 and action is not None:
             action()
-    else:
-        pg.draw.rect(display, color, (x, y, width, height))
 
-    font2 = pg.font.Font("freesansbold.ttf", 20)
-    buttontext = font2.render(text, True, (240, 10, 236))
+    # Render button boxes and text
+    font2 = pg.font.Font('BOYCOTT_.ttf', 24)
+    buttontext = font2.render(text, True, magenta)
     buttonbox = buttontext.get_rect()
     buttonbox.center = ((x + (width / 2)), (y + (height / 2)))
 
     display.blit(buttontext, buttonbox)
 
 
+# function to display start/menu screen
 def menu_screen():
     running = True
 
     while running:
+        # ways to quit game
         for event in pg.event.get():
             if event.type == pg.QUIT:
                 pg.quit()
@@ -74,41 +87,42 @@ def menu_screen():
         display.blit(background.pic, background.box)
 
         # create font and textbox to display title
-        font = pg.font.Font('freesansbold.ttf', 64)
-        title = font.render('Escape to Miami', True, (240, 10, 236))
-        titleBox = title.get_rect()
-        titleBox.center = (w * .5, h * .5)
+        font = pg.font.Font('After_Shok.ttf', 64)
+        title = font.render('Escape to Miami', True, magenta)
+        titlebox = title.get_rect()
+        titlebox.center = (w * .5, h * .5)
 
         # put text box object on the center of the display object
-        display.blit(title, titleBox)
+        display.blit(title, titlebox)
 
-        button("Begin!", 250, 450, 100, 50, (255, 255, 255), (0, 200, 0), game_loop)
-        button("Quit", 650, 450, 100, 50, (255, 255, 255), (0, 200, 0), game_quit)
+        # display begin and quit buttons
+        button('Begin', 250, 450, 100, 50, white, game_loop)
+        button('Quit', 650, 450, 100, 50, white, game_quit)
 
         pg.display.update()
         clock.tick(15)
 
 
-# loop to run the game
+# loop to run the actual game when begin button is pressed
 def game_loop():
     running = True
+
     while running:
+        # ways to quit game
         for event in pg.event.get():
             if event.type == pg.QUIT:
                 running = False
             if event.type == KEYDOWN:
                 if event.key == K_ESCAPE:
                     running = False
+
         # fill display black
         display.fill((0, 0, 0))
         pg.display.update()
 
 
-def game_quit():
-    pg.quit()
-
-
 # start game
 menu_screen()
+
 # exit game
 pg.quit()
