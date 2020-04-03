@@ -1,4 +1,8 @@
 import pygame as pg
+from pygame import font
+from extraction import scenario
+import textwrap
+
 from pygame.locals import (
     K_UP,
     K_DOWN,
@@ -21,6 +25,12 @@ w, h = 1000, 600
 magenta = (240, 10, 236)
 black = (0, 0, 0)
 white = (255, 255, 255)
+
+# defining text wrapping dimensions
+wrap_options = {'extra_large': [90, 8, 90],
+                'large': [50, 16, 45],
+                'medium': [36,24,20],
+                'small': [15,60,10]}
 
 # create the display window
 display = pg.display.set_mode([w, h])
@@ -111,13 +121,19 @@ def game_loop():
         # ways to quit game
         for event in pg.event.get():
             if event.type == pg.QUIT:
-                running = False
+                game_quit()
             if event.type == KEYDOWN:
                 if event.key == K_ESCAPE:
                     running = False
 
         # fill display black
         display.fill((0, 0, 0))
+        font3 = pg.font.SysFont('Arial', 15)
+        scenario_text = font3.render(scenario, True, white)
+        scenario_box = scenario_text.get_rect()
+        scenario_box.center = (w * .5, h * .5)
+        display.blit(scenario_text, scenario_box)
+
         pg.display.update()
 
 
