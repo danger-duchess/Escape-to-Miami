@@ -7,7 +7,7 @@ cx_Freeze.setup(
     name='Escape to Miami',
     version='1.1',
     options={'build_exe': {"packages": ['pygame'],
-                           'include_files': ['miami-sunset.jpg', 'alligator.png', 'BOYCOTT_.ttf', 'After_Shok.ttf']}},
+                           'include_files': ['miami-sunset.jpg', 'alligator.png', 'BOYCOTT_.ttf', 'After_Shok.ttf', 'DaytonaGlades.jpg']}},
     packages=[''],
     url='http://escapetomiami.com',
     license='',

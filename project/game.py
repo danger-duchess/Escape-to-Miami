@@ -10,7 +10,10 @@ from pygame.locals import (
     K_RIGHT,
     K_ESCAPE,
     KEYDOWN,
+    K_n,
     QUIT, )
+
+milesfrommiami = 223
 
 # initialize pygame
 pg.init()
@@ -29,8 +32,8 @@ white = (255, 255, 255)
 # defining text wrapping dimensions
 wrap_options = {'extra_large': [90, 8, 90],
                 'large': [50, 16, 45],
-                'medium': [36,24,20],
-                'small': [15,60,10]}
+                'medium': [36, 24, 20],
+                'small': [15, 60, 10]}
 
 # create the display window
 display = pg.display.set_mode([w, h])
@@ -42,10 +45,26 @@ pg.display.set_caption('Escape to Miami')
 gatorPic = pg.image.load('alligator.png')
 gatorPic = pg.transform.scale(gatorPic, (550, 500))
 
+intro_script = [
+    "Press n to continue at the end of the script",
+    "It's a beautiful, swampy day near Shingle Creek, Florida, the headwaters of the Everglades. Normally, you'd be fine with this but you're bored. So bored.",
+    "You decide to take that car for a spin through the Everglades until you get to Miami.",
+    "Only 233 miles to go! Let's see what happens as you escape to Miami"]
+
 
 # function to quit game if quit button is pressed
 def game_quit():
     pg.quit()
+
+
+# function to display text (need to figure out how I can implement later)
+def message_display(text):
+    font = pg.font.SysFont('Arial', 15)
+    message = font.render(text, True, (255, 255, 0))
+    textRect = message.get_rect()
+    textRect.center = (w * .5, h * .5)
+    display.blit(message, textRect)
+    pg.display.update()
 
 
 # class to create title screen background
@@ -116,7 +135,8 @@ def menu_screen():
 # loop to run the actual game when begin button is pressed
 def game_loop():
     running = True
-
+    # variable to iterate through intro
+    i = 0
     while running:
         # ways to quit game
         for event in pg.event.get():
@@ -125,16 +145,31 @@ def game_loop():
             if event.type == KEYDOWN:
                 if event.key == K_ESCAPE:
                     running = False
-
-        # fill display black
+                if event.key == K_n:
+                    # iterate through intro script until end is reached
+                    if i < len(intro_script):
+                        i += 1
+                        message = intro_script[i]
         display.fill((0, 0, 0))
+        # add first image for background
+        background1 = Background("shingle-creek-00.jpg", [0, 0])
+        background1.pic = pg.transform.scale(background1.pic, (w, h))
+        display.blit(background1.pic, background1.box)
+
         font3 = pg.font.SysFont('Arial', 15)
+        message = intro_script[i]
+        intro = font3.render(message, True, (255, 255, 0))
+        intro_box = intro.get_rect()
+        intro_box.center = (w * .5, h * .5)
+        display.blit(intro, intro_box)
+        pg.display.update()
+        # fill display black
+        '''display.fill((0, 0, 0))
         scenario_text = font3.render(scenario, True, white)
         scenario_box = scenario_text.get_rect()
         scenario_box.center = (w * .5, h * .5)
         display.blit(scenario_text, scenario_box)
-
-        pg.display.update()
+        pg.display.update()'''
 
 
 # start game
