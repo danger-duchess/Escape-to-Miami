@@ -1,5 +1,10 @@
 # Escape to Miami
 
+from random import seed
+from random import randint
+
+seed()
+
 
 class Car:
     def __init__(self):
@@ -41,4 +46,27 @@ class Car:
     def updatePosition(self):
         self._position = self._position + self.getSpeed()
 
-    
+    def randomAccident(self):
+        r = randint(0, 5)
+        if r is 0:
+            return "You have a flat tire! Your car has stopped!"
+        elif r is 1:
+            return "Your car is having engine troubles! You've pulled over and must make repairs!"
+        elif r is 2:
+            return "Your windshield has a crack in it! You can't see so you have pulled over!"
+        elif r is 3:
+            return "You...uh...ran out of wiper fluid? YEAH you ran out of wiper fluid! Its always raining in Miami," \
+                    "so...uh...get more of it, I guess?"
+        else:
+            return "DEAR GOD A MAN HAS FLUNG HIMSELF ONTO YOUR CAR! He somehow seems okay...and runs off. That was" \
+                    "weird...Well now your car has damage on the hood not making it street legal. Repair it!"
+
+    def issueRandom(self):
+        if randint(0, 120) is 0:
+            self.setCondition(-self.getCondition())
+            return self.randomAccident()
+        else:
+            return "You keep chugging along..."
+
+
+
