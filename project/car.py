@@ -21,7 +21,7 @@ class Car:
     def setHealth(self, n):
         self._health += n
 
-    def getFuel(self, ):
+    def getFuel(self):
         return self._fuel
 
     def setFuel(self, n):
