@@ -21,7 +21,7 @@ class Car:
     def setHealth(self, n):
         self._health += n
 
-    def getFuel(self,):
+    def getFuel(self, ):
         return self._fuel
 
     def setFuel(self, n):
@@ -42,6 +42,9 @@ class Car:
     def getSpeed(self):
         return self._speed
 
+    def getPosition(self):
+        return self._position
+
     # position is purely based on speed
     def updatePosition(self):
         self._position = self._position + self.getSpeed()
@@ -56,10 +59,10 @@ class Car:
             return "Your windshield has a crack in it! You can't see so you have pulled over!"
         elif r is 3:
             return "You...uh...ran out of wiper fluid? YEAH you ran out of wiper fluid! Its always raining in Miami," \
-                    "so...uh...get more of it, I guess?"
+                   "so...uh...get more of it, I guess?"
         else:
             return "DEAR GOD A MAN HAS FLUNG HIMSELF ONTO YOUR CAR! He somehow seems okay...and runs off. That was" \
-                    "weird...Well now your car has damage on the hood not making it street legal. Repair it!"
+                   "weird...Well now your car has damage on the hood not making it street legal. Repair it!"
 
     def issueRandom(self):
         if randint(0, 120) is 0:
@@ -67,6 +70,3 @@ class Car:
             return self.randomAccident()
         else:
             return "You keep chugging along..."
-
-
-

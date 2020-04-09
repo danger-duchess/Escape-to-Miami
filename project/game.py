@@ -1,6 +1,8 @@
 import pygame as pg
+from random import randint
 from pygame import font
 from extraction import scenario
+from project.car import Car
 import textwrap
 
 from pygame.locals import (
@@ -12,8 +14,6 @@ from pygame.locals import (
     KEYDOWN,
     K_n,
     QUIT, )
-
-milesfrommiami = 223
 
 # initialize pygame
 pg.init()
@@ -45,11 +45,16 @@ pg.display.set_caption('Escape to Miami')
 gatorPic = pg.image.load('alligator.png')
 gatorPic = pg.transform.scale(gatorPic, (550, 500))
 
+# story script for first part of game
 intro_script = [
     "Press n to continue at the end of the script",
     "It's a beautiful, swampy day near Shingle Creek, Florida, the headwaters of the Everglades. Normally, you'd be fine with this but you're bored. So bored.",
     "You decide to take that car for a spin through the Everglades until you get to Miami.",
     "Only 233 miles to go! Let's see what happens as you escape to Miami"]
+
+# variables for player and distance needed to be covered
+milesfrommiami = 223
+player_car = Car()
 
 
 # function to quit game if quit button is pressed
@@ -57,7 +62,7 @@ def game_quit():
     pg.quit()
 
 
-# function to display text (need to figure out how I can implement later)
+# function to display text
 def message_display(text):
     font = pg.font.SysFont('Arial', 15)
     message = font.render(text, True, (255, 255, 0))
@@ -76,6 +81,18 @@ class Background(pg.sprite.Sprite):
         self.pic = pg.image.load(background_pic)
         self.box = self.pic.get_rect()
         self.box.left, self.box.top = location
+
+
+# function to generate a random event
+def RandomEvent(n):
+
+    if n is 0:
+        message_display(player_car.issueRandom())
+    if n is 1:
+        message_display(scenario)
+    if n is 2:
+        message_display()
+
 
 
 # function to define a button press, with dimensions, location, colors, and actions
@@ -136,6 +153,8 @@ def menu_screen():
 def game_loop():
     running = True
     # variable to iterate through intro
+    turnend = False
+    turns = 0
     i = 0
     while running:
         # ways to quit game
@@ -149,27 +168,32 @@ def game_loop():
                     # iterate through intro script until end is reached
                     if i < len(intro_script):
                         i += 1
-                        message = intro_script[i]
+                    else:
+                        pass
         display.fill((0, 0, 0))
         # add first image for background
         background1 = Background("shingle-creek-00.jpg", [0, 0])
         background1.pic = pg.transform.scale(background1.pic, (w, h))
         display.blit(background1.pic, background1.box)
 
-        font3 = pg.font.SysFont('Arial', 15)
         message = intro_script[i]
-        intro = font3.render(message, True, (255, 255, 0))
-        intro_box = intro.get_rect()
-        intro_box.center = (w * .5, h * .5)
-        display.blit(intro, intro_box)
-        pg.display.update()
-        # fill display black
-        '''display.fill((0, 0, 0))
-        scenario_text = font3.render(scenario, True, white)
-        scenario_box = scenario_text.get_rect()
-        scenario_box.center = (w * .5, h * .5)
-        display.blit(scenario_text, scenario_box)
-        pg.display.update()'''
+        message_display(message)
+        if i is len(intro_script):
+            while player_car.getPosition() is not milesfrommiami:
+                message = "Turn " + turns
+                message_display(turns)
+                if player_car.getCondition() is 0:
+                    player_car.setHealth()
+                eventopt = randint(0, 1)
+                if eventopt is 0:
+                    player_car.updatePosition()
+                    player_car.setFuel()
+                    status = "You are " + (milesfrommiami - player_car.getPosition()) + "miles away from Miami"
+                    message_display(status)
+                    turns += 1
+                    turnend = True
+                if eventopt is 1:
+                    RandomEvent()
 
 
 # start game
