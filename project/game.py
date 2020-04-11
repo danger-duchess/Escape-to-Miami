@@ -3,6 +3,7 @@ from random import randint
 from pygame import font
 from extraction import scenario
 from project.car import Car
+from project.randomencounter import RandomEncounter
 import textwrap
 
 from pygame.locals import (
@@ -55,7 +56,7 @@ intro_script = [
 # variables for player and distance needed to be covered
 milesfrommiami = 223
 player_car = Car()
-
+encounter = RandomEncounter()
 
 # function to quit game if quit button is pressed
 def game_quit():
