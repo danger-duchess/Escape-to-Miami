@@ -323,8 +323,7 @@ def game_loop():
                     # iterate through intro script until end is reached
                     if i < len(intro_script):
                         i += 1
-                    else:
-                        pass
+
         display.fill((0, 0, 0))
         # add first image for background
         if i < len(intro_script):
@@ -344,12 +343,14 @@ def game_loop():
                 player_car.updatePosition()
                 # idk what we are setting it too
                 player_car.setFuel(1)
-                status = "You are " + str(milesfrommiami - player_car.getPosition()) + "miles away from Miami"
+                status = "You are " + str(
+                    milesfrommiami - player_car.getPosition()) + "miles away from Miami"
                 message_display(status)
                 turns += 1
                 turnend = True
             if eventopt == 1:
                 RandomEvent(randint(0, 1))
+            pg.time.wait(5000)
 
 
 # start game
