@@ -41,7 +41,7 @@ class Car:
     # when condition changes, car will slow down or speed up depending on if n is negative or positive
     def setCondition(self, n):
         self._condition += n
-        if self._conditon <= 0:
+        if self._condition <= 0:
             self._condition = 0
         elif self._condition > 100:
             self._condition = 100
@@ -58,8 +58,10 @@ class Car:
         return self._position
 
     # position is purely based on speed
-    def updatePosition(self):
+    def updatePosition(self, miles_covered=0):
         self._position = self._position + self.getSpeed()
+        if miles_covered != 0:
+            self._position += miles_covered
 
     def randomAccident(self):
         r = randint(0, 5)

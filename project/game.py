@@ -125,12 +125,12 @@ class Background(pg.sprite.Sprite):
 
 # function to generate a random event
 def RandomEvent(n):
-    if n is 0:
+    if n == 0:
         message_display(player_car.issueRandom())
-    elif n is 1:
+    elif n == 1:
         r1 = randint(0, 1)
         if r1 == 0:
-            choice_dict = choice(self._choice_based)  # choose an index from the choice based ones
+            choice_dict = choice(choice_based)  # choose an index from the choice based ones
             script = choice_dict['script']
             choices = choice_dict['choices']
             font = pg.font.SysFont('Arial', 15)
@@ -138,12 +138,13 @@ def RandomEvent(n):
             textRect = message.get_rect()
             textRect.center = (w * .5, h * .5)
             display.blit(message, textRect)
-            button(choices[1], 250, 450, 100, 50, white, player_choice1(choice_dict))
-            button(choices[2], 650, 450, 100, 50, white, player_choice2(choice_dict))
+            button(choices[0], 250, 450, 100, 50, white, player_choice1(choice_dict))
+            button(choices[1], 650, 450, 100, 50, white, player_choice2(choice_dict))
         elif r1 == 1:
             choice_dict = choice(true_random)
             script = choice_dict['script']
             outcomes = choice_dict['outcomes']
+            message_display(script)
 
 
 # choice for player button 1
@@ -154,35 +155,35 @@ def player_choice1(event_dict):
 
     if event_dict['type'] == 'gas station':
         refuel = randint(0, 25)
-        if outcome is 0:
+        if outcome == 0:
             player_car.setFuel(refuel)
             result = "You refilled your tank with %d units of gas" % refuel
-        elif outcome is 1:
+        elif outcome == 1:
             player_car.setFuel(-refuel)
             result = "You lost %d units of gas" % refuel
     elif event_dict['type'] == 'Sublix':
-        if outcome is 0:
+        if outcome == 0:
             result = "A sub has been added to your inventory!"
             p_inventory.addItem("sub")
-        elif outcome is 1:
+        elif outcome == 1:
             damage = randint(0, 25)
             player_car.setHealth(-damage)
             result = "You lost %d health" % damage
     elif event_dict['type'] == 'rest stop':
-        if outcome is 0:
+        if outcome == 0:
             fix = 100 - player_car.getCondition()
             player_car.setCondition(fix)
             result = "Your car's condition is at %d percent!" % player_car.getCondition()
-        elif outcome is 1:
+        elif outcome == 1:
             fix = randint(0, 50)
             player_car.setCondition(-fix)
             result = "Your car's condition is at %d percent!" % player_car.getCondition()
     else:
         milescovered = randint(0, 20)
-        if outcome is 0:
+        if outcome == 0:
             player_car.updatePosition(milescovered)
             result = "You are now %d miles closer to Miami" % milescovered
-        if outcome is 1:
+        if outcome == 1:
             condition = randint(0, 25)
             player_car.setCondition(-condition)
             result = "Your car is at %d condition, but you are %d miles closer to Miami" % (player_car.getCondition(), milescovered)
@@ -198,31 +199,31 @@ def player_choice2(event_dict):
 
     if event_dict['type'] == 'gas station':
         refuel = randint(0, 25)
-        if outcome is 0:
+        if outcome == 0:
             pass
-        elif outcome is 1:
+        elif outcome == 1:
             player_car.setFuel(-refuel)
             result = "You lost %d units of gas" % refuel
     elif event_dict['type'] == 'Sublix':
-        if outcome is 0:
+        if outcome == 0:
             pass
-        elif outcome is 1:
+        elif outcome == 1:
             damage = randint(0, 25)
             player_car.setHealth(-damage)
             result = "You take %d health loss as a result." % damage
     elif event_dict['type'] == 'rest stop':
-        if outcome is 0:
+        if outcome == 0:
             pass
-        elif outcome is 1:
+        elif outcome == 1:
             fix = randint(0, 50)
             player_car.setCondition(-fix)
             result = "Your car's condition is at %d percent!" % player_car.getCondition()
     else:
         milescovered = randint(0, 20)
-        if outcome is 0:
+        if outcome == 0:
             player_car.updatePosition(milescovered)
             result = "You are now %d miles closer to Miami" % milescovered
-        if outcome is 1:
+        if outcome == 1:
             player_car.updatePosition(-milescovered)
             result = "You are %d miles further from Miami" % milescovered
     final_outcome = outcomes[outcome] + "" + result
@@ -326,29 +327,29 @@ def game_loop():
                         pass
         display.fill((0, 0, 0))
         # add first image for background
-        background1 = Background("shingle-creek-00.jpg", [0, 0])
-        background1.pic = pg.transform.scale(background1.pic, (w, h))
-        display.blit(background1.pic, background1.box)
-
-        message = intro_script[i]
-        message_display(message)
-        if i is len(intro_script):
-            while player_car.getPosition() is not milesfrommiami:
-                pg.display.update()
-                message = "Turn " + turns
-                message_display(turns)
-                if player_car.getCondition() is 0:
-                    player_car.setHealth(-1)
-                eventopt = randint(0, 1)
-                if eventopt is 0:
-                    player_car.updatePosition()
-                    player_car.setFuel()
-                    status = "You are " + (milesfrommiami - player_car.getPosition()) + "miles away from Miami"
-                    message_display(status)
-                    turns += 1
-                    turnend = True
-                if eventopt is 1:
-                    RandomEvent()
+        if i < len(intro_script):
+            background1 = Background("shingle-creek-00.jpg", [0, 0])
+            background1.pic = pg.transform.scale(background1.pic, (w, h))
+            display.blit(background1.pic, background1.box)
+            message = intro_script[i]
+            message_display(message)
+        if i == len(intro_script) and player_car.getPosition() != milesfrommiami:
+            display.fill((0, 0, 0))
+            message = "Turn " + str(turns)
+            message_display(message)
+            if player_car.getCondition() == 0:
+                player_car.setHealth(-1)
+            eventopt = randint(0, 1)
+            if eventopt == 0:
+                player_car.updatePosition()
+                # idk what we are setting it too
+                player_car.setFuel(1)
+                status = "You are " + str(milesfrommiami - player_car.getPosition()) + "miles away from Miami"
+                message_display(status)
+                turns += 1
+                turnend = True
+            if eventopt == 1:
+                RandomEvent(randint(0, 1))
 
 
 # start game
