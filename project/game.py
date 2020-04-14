@@ -138,8 +138,8 @@ def RandomEvent(n):
             textRect = message.get_rect()
             textRect.center = (w * .5, h * .5)
             display.blit(message, textRect)
-            button(choices[0], 250, 450, 100, 50, white, player_choice1(choice_dict))
-            button(choices[1], 650, 450, 100, 50, white, player_choice2(choice_dict))
+            choice_button(choices[0], 250, 450, 100, 50, white, player_choice1(choice_dict))
+            choice_button(choices[1], 650, 450, 100, 50, white, player_choice2(choice_dict))
         elif r1 == 1:
             choice_dict = choice(true_random)
             script = choice_dict['script']
