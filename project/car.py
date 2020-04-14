@@ -20,19 +20,31 @@ class Car:
 
     def setHealth(self, n):
         self._health += n
+        if self._health <= 0:
+            self._health = 0
+        elif self._health > 100:
+            self._health = 100
 
     def getFuel(self):
         return self._fuel
 
     def setFuel(self, n):
         self._fuel += n
+        if self._fuel <= 0:
+            self._fuel = 0
+        elif self._fuel > 100:
+            self._fuel = 100
 
     def getCondition(self):
         return self._condition
 
-    # when condition changes, car will slow down
+    # when condition changes, car will slow down or speed up depending on if n is negative or positive
     def setCondition(self, n):
         self._condition += n
+        if self._conditon <= 0:
+            self.setHealth(-1)  # reduce health if condition is 0
+        elif self._condition > 100:
+            self._condition = 100
         n *= 0.01
         self.updateSpeed(n)
 
@@ -70,3 +82,9 @@ class Car:
             return self.randomAccident()
         else:
             return "You keep chugging along..."
+
+    def is_dead(self):
+        if self._fuel == 0 or self._health == 0:
+            return True
+        else:
+            return False

@@ -58,4 +58,3 @@ if __name__ == "__main__":
     print(inventory.useItem("Chimken Nug"))
     print(inventory.useItem("Gas Can"))
     print(inventory.getInventory())
-
