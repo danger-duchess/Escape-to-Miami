@@ -334,6 +334,7 @@ def game_loop():
         message_display(message)
         if i is len(intro_script):
             while player_car.getPosition() is not milesfrommiami:
+                pg.display.update()
                 message = "Turn " + turns
                 message_display(turns)
                 if player_car.getCondition() is 0:

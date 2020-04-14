@@ -42,7 +42,7 @@ class Car:
     def setCondition(self, n):
         self._condition += n
         if self._conditon <= 0:
-            self.setHealth(-1)  # reduce health if condition is 0
+            self._condition = 0
         elif self._condition > 100:
             self._condition = 100
         n *= 0.01
