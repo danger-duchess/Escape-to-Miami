@@ -3,8 +3,8 @@ from random import randint
 from random import choice
 from pygame import font
 from extraction import scenario
-from project.car import Car
-from project.inventory import Inventory
+from project1.car import Car
+from project1.inventory import Inventory
 import textwrap
 
 from pygame.locals import (
@@ -103,12 +103,30 @@ def game_quit():
 
 
 # function to display text
-def message_display(text):
+def message_display(text, align):
     font = pg.font.SysFont('Arial', 15)
     message = font.render(text, True, (255, 255, 0))
     textRect = message.get_rect()
-    textRect.center = (w * .5, h * .5)
-    display.blit(message, textRect)
+    if align == "center":
+        textRect.center = (w*0.5, h*0.5)
+        display.blit(message, textRect)
+    elif align == "right":
+        display.blit(message, textRect)
+    elif align == "left":
+        display.blit(message, textRect)
+    elif align == "bottomright":
+        textRect.bottomright = (w, h)
+        display.blit(message, textRect)
+    elif align == "bottomleft":
+        textRect.bottomleft = (0, h)
+        display.blit(message, textRect)
+    elif align == "topright":
+        textRect.topright = (h, 0)
+        display.blit(message, textRect)
+    elif align == "topleft":
+        textRect.topleft = (0, 0)
+        display.blit(message, textRect)
+
     pg.display.update()
 
 
@@ -126,7 +144,7 @@ class Background(pg.sprite.Sprite):
 # function to generate a random event
 def RandomEvent(n):
     if n == 0:
-        message_display(player_car.issueRandom())
+        message_display(player_car.issueRandom(), "topleft")
     elif n == 1:
         r1 = randint(0, 1)
         if r1 == 0:
@@ -144,7 +162,7 @@ def RandomEvent(n):
             choice_dict = choice(true_random)
             script = choice_dict['script']
             outcomes = choice_dict['outcomes']
-            message_display(script)
+            message_display(script, "center")
 
 
 # choice for player button 1
@@ -188,7 +206,7 @@ def player_choice1(event_dict):
             player_car.setCondition(-condition)
             result = "Your car is at %d condition, but you are %d miles closer to Miami" % (player_car.getCondition(), milescovered)
     final_outcome = outcomes[outcome] + "" + result
-    message_display(final_outcome)
+    message_display(final_outcome, "center")
 
 
 # choice for player button 2
@@ -226,8 +244,8 @@ def player_choice2(event_dict):
         if outcome == 1:
             player_car.updatePosition(-milescovered)
             result = "You are %d miles further from Miami" % milescovered
-    final_outcome = outcomes[outcome] + "" + result
-    message_display(final_outcome)
+    final_outcome = outcomes[outcome] + " " + result
+    message_display(final_outcome, "center")
 
 
 # function to define a button press, with dimensions, location, colors, and actions
@@ -331,11 +349,11 @@ def game_loop():
             background1.pic = pg.transform.scale(background1.pic, (w, h))
             display.blit(background1.pic, background1.box)
             message = intro_script[i]
-            message_display(message)
+            message_display(message, "center")
         if i == len(intro_script) and player_car.getPosition() != milesfrommiami:
             display.fill((0, 0, 0))
             message = "Turn " + str(turns)
-            message_display(message)
+            message_display(message, "topright")
             if player_car.getCondition() == 0:
                 player_car.setHealth(-1)
             eventopt = randint(0, 1)
@@ -345,12 +363,12 @@ def game_loop():
                 player_car.setFuel(1)
                 status = "You are " + str(
                     milesfrommiami - player_car.getPosition()) + "miles away from Miami"
-                message_display(status)
+                message_display(status, "bottomright")
                 turns += 1
                 turnend = True
             if eventopt == 1:
                 RandomEvent(randint(0, 1))
-            pg.time.wait(5000)
+            pg.time.wait(10000)
 
 
 # start game
