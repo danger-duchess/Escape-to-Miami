@@ -102,8 +102,9 @@ def game_quit():
     pg.quit()
 
 
-# function to display text
-def message_display(text, align):
+# function to display text, pass align in to put text where you want it
+# off used as offset (use when text is being stacked somewhere)
+def message_display(text, align, offh=0, offw=0):
     font = pg.font.SysFont('Arial', 15)
     message = font.render(text, True, (255, 255, 0))
     textRect = message.get_rect()
@@ -115,16 +116,16 @@ def message_display(text, align):
     elif align == "left":
         display.blit(message, textRect)
     elif align == "bottomright":
-        textRect.bottomright = (w, h)
+        textRect.bottomright = (w+offw, h+offh)
         display.blit(message, textRect)
     elif align == "bottomleft":
-        textRect.bottomleft = (0, h)
+        textRect.bottomleft = (0+offw, h+offh)
         display.blit(message, textRect)
     elif align == "topright":
-        textRect.topright = (h, 0)
+        textRect.topright = (w+offw, 0+offh)
         display.blit(message, textRect)
     elif align == "topleft":
-        textRect.topleft = (0, 0)
+        textRect.topleft = (0+offw, 0+offh)
         display.blit(message, textRect)
 
     pg.display.update()
@@ -144,7 +145,7 @@ class Background(pg.sprite.Sprite):
 # function to generate a random event
 def RandomEvent(n):
     if n == 0:
-        message_display(player_car.issueRandom(), "topleft")
+        message_display(player_car.issueRandom(), "center")
     elif n == 1:
         r1 = randint(0, 1)
         if r1 == 0:
@@ -352,8 +353,29 @@ def game_loop():
             message_display(message, "center")
         if i == len(intro_script) and player_car.getPosition() != milesfrommiami:
             display.fill((0, 0, 0))
+            p_inventory.addItem("Chicken Nugget")
             message = "Turn " + str(turns)
             message_display(message, "topright")
+            message = "Player Health: " + str(player_car.getHealth())
+            message_display(message, "topleft")
+            message = "Car Condition: " + str(player_car.getCondition())
+            message_display(message, "topleft", 15)
+            message = "Car Fuel: " + str(player_car.getFuel()) + " official Florida unit per mile"
+            message_display(message, "topleft", 30)
+            message = "Car Speed: " + str(player_car.getSpeed())
+            message_display(message, "topleft", 45)
+            message = "Inventory: "
+            message_display(message, "bottomleft", -45)
+            i_amt, i_inv = p_inventory.getInventory()
+            if i_amt == 0:
+                message = "Empty"
+                message_display(message, "bottomleft")
+            else:
+                space = 0
+                for j in i_inv:
+                    message = str(j) + "\n" + str(i_inv[j])
+                    message_display(message, "bottomleft", 0, space)
+                    space += 100
             if player_car.getCondition() == 0:
                 player_car.setHealth(-1)
             eventopt = randint(0, 1)
@@ -362,12 +384,13 @@ def game_loop():
                 # idk what we are setting it too
                 player_car.setFuel(1)
                 status = "You are " + str(
-                    milesfrommiami - player_car.getPosition()) + "miles away from Miami"
+                    milesfrommiami - player_car.getPosition()) + " miles away from Miami"
                 message_display(status, "bottomright")
                 turns += 1
                 turnend = True
             if eventopt == 1:
                 RandomEvent(randint(0, 1))
+            player_car.setFuel(-1)
             pg.time.wait(10000)
 
 
