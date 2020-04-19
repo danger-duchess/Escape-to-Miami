@@ -3,8 +3,8 @@ from random import randint
 from random import choice
 from pygame import font
 from extraction import scenario
-from project1.car import Car
-from project1.inventory import Inventory
+from project.car import Car
+from project.inventory import Inventory
 import textwrap
 
 from pygame.locals import (
@@ -92,7 +92,7 @@ true_random = [dict(type="traffic jam",
                     outcomes=["You fight them off! They give you an item as payment!",
                               "You've been defeated by their craziness! You lose health and condition."])]
 # variables for player and distance needed to be covered
-milesfrommiami = 223
+milesfrommiami = 223  # actual distance from Shingle Creek to Miami
 player_car = Car()
 p_inventory = Inventory()
 
@@ -109,23 +109,23 @@ def message_display(text, align, offh=0, offw=0):
     message = font.render(text, True, (255, 255, 0))
     textRect = message.get_rect()
     if align == "center":
-        textRect.center = (w*0.5, h*0.5)
+        textRect.center = (w * 0.5, h * 0.5)
         display.blit(message, textRect)
     elif align == "right":
         display.blit(message, textRect)
     elif align == "left":
         display.blit(message, textRect)
     elif align == "bottomright":
-        textRect.bottomright = (w+offw, h+offh)
+        textRect.bottomright = (w + offw, h + offh)
         display.blit(message, textRect)
     elif align == "bottomleft":
-        textRect.bottomleft = (0+offw, h+offh)
+        textRect.bottomleft = (0 + offw, h + offh)
         display.blit(message, textRect)
     elif align == "topright":
-        textRect.topright = (w+offw, 0+offh)
+        textRect.topright = (w + offw, 0 + offh)
         display.blit(message, textRect)
     elif align == "topleft":
-        textRect.topleft = (0+offw, 0+offh)
+        textRect.topleft = (0 + offw, 0 + offh)
         display.blit(message, textRect)
 
     pg.display.update()
@@ -182,8 +182,11 @@ def player_choice1(event_dict):
             result = "You lost %d units of gas" % refuel
     elif event_dict['type'] == 'Sublix':
         if outcome == 0:
-            result = "A sub has been added to your inventory!"
-            p_inventory.addItem("sub")
+            if not p_inventory.addItem("sub"):
+                result = "Your inventory is full! You can't add anymore items."
+            else:
+                result = "A sub has been added to your inventory!"
+                p_inventory.addItem("sub")
         elif outcome == 1:
             damage = randint(0, 25)
             player_car.setHealth(-damage)
@@ -205,7 +208,8 @@ def player_choice1(event_dict):
         if outcome == 1:
             condition = randint(0, 25)
             player_car.setCondition(-condition)
-            result = "Your car is at %d condition, but you are %d miles closer to Miami" % (player_car.getCondition(), milescovered)
+            result = "Your car is at %d condition, but you are %d miles closer to Miami" % (
+                player_car.getCondition(), milescovered)
     final_outcome = outcomes[outcome] + "" + result
     message_display(final_outcome, "center")
 
@@ -247,6 +251,18 @@ def player_choice2(event_dict):
             result = "You are %d miles further from Miami" % milescovered
     final_outcome = outcomes[outcome] + " " + result
     message_display(final_outcome, "center")
+
+
+'''def inventory_display():
+    inventory_array, length = p_inventory
+    if length == 0:
+        message = "You have no items."
+        message_display(message, "center")
+        return True
+    else:
+        for i in length - 1:
+            items = str(inventory_array[i])
+            message = "You have %d items, use one? Your items are " % length'''
 
 
 # function to define a button press, with dimensions, location, colors, and actions
@@ -371,11 +387,8 @@ def game_loop():
                 message = "Empty"
                 message_display(message, "bottomleft")
             else:
-                space = 0
-                for j in i_inv:
-                    message = str(j) + "\n" + str(i_inv[j])
-                    message_display(message, "bottomleft", 0, space)
-                    space += 100
+                message = str(i_amt) + " Items"
+                message_display(message, "bottomleft", 0)
             if player_car.getCondition() == 0:
                 player_car.setHealth(-1)
             eventopt = randint(0, 1)

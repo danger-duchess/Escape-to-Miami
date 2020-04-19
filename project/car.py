@@ -65,13 +65,13 @@ class Car:
 
     def randomAccident(self):
         r = randint(0, 5)
-        if r is 0:
+        if r == 0:
             return "You have a flat tire! Your car has stopped!"
-        elif r is 1:
+        elif r == 1:
             return "Your car is having engine troubles! You've pulled over and must make repairs!"
-        elif r is 2:
+        elif r == 2:
             return "Your windshield has a crack in it! You can't see so you have pulled over!"
-        elif r is 3:
+        elif r == 3:
             return "You...uh...ran out of wiper fluid? YEAH you ran out of wiper fluid! Its always raining in Miami," \
                    "so...uh...get more of it, I guess?"
         else:
