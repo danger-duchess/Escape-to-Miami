@@ -225,7 +225,7 @@ def player_choice1(event_dict):
             result = "Your car is at %d condition, but you are %d miles closer to Miami" % (
                 player_car.getCondition(), milescovered)
     final_outcome = outcomes[outcome] + "" + result
-    message_display(final_outcome, "center")
+    message_display(final_outcome, "center", 20)
     pg.display.update()
 
 
@@ -264,7 +264,7 @@ def player_choice2(event_dict):
             player_car.updatePosition(-milescovered)
             result = "You are %d miles further from Miami" % milescovered
     final_outcome = outcomes[outcome] + " " + result
-    message_display(final_outcome, "center")
+    message_display(final_outcome, "center", 20)
     pg.display.update()
 
 
@@ -290,7 +290,7 @@ def true_random_outcome(event_dict):
         elif outcome == 1:
             bite = randint(0, 35)
             player_car.setCondition(-bite)
-            result = "You lose %d condition. Damn, that's a nasty bite!"
+            result = "You lose %d condition. Damn, that's a nasty bite!" % bite
     else:
         if outcome == 0:
             if condition < fuel and condition < health:
@@ -352,7 +352,7 @@ def inventory_use():
             pass
     else:
         result = "You have nothing to fix right now! You save your items for later."
-    message_display(result, "center")
+    message_display(result, "center", 20)
     pg.display.update()
 
 
@@ -391,6 +391,7 @@ def inventory_display():
                         game_loop()
                         running = False
     pg.display.update()
+
 
 # function to define a button press, with dimensions, location, colors, and actions
 def button(text, x, y, width, height, presscolor, action=None):
