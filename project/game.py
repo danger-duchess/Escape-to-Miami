@@ -422,7 +422,7 @@ def game_loop():
     background1 = Background("road.jpg", [0, 0])
     background1.pic = pg.transform.scale(background1.pic, (w, h))
     display.blit(background1.pic, background1.box)
-    pg.display.update()
+    #pg.display.update()
     i = 0
 
     while running:
@@ -462,7 +462,6 @@ def game_loop():
             status = "You are " + str(
                 milesfrommiami - player_car.getPosition()) + " miles away from Miami"
             message_display(status, "bottomright")
-            turns += 1
             i_amt, i_inv = p_inventory.getInventory()
             if i_amt == 0:
                 message = "Empty"
@@ -494,6 +493,11 @@ def game_loop():
             player_car.setFuel(-1)
             if i == 1:
                 pg.display.update()
+            if player_car.getPosition() == milesfrommiami:
+                win()
+            if player_car.getHealth == 0:
+                lose()
+
             clock.tick(15)
 
 
