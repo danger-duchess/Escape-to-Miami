@@ -452,13 +452,39 @@ def game_loop():
                 player_car.setCondition(-player_car.getCondition())
             eventopt = randint(0, 1)
             if eventopt == 0:
+                message = "What a beautiful day on I-75"
+                message_display(message, "center")
                 player_car.updatePosition()
-                turnend = True
             if eventopt == 1:
                 RandomEvent(randint(0, 1))
+            if player_car.is_dead() is True:
+                if p_inventory.useItem("sub"):
+                    player_car.setHealth(25)
+                    message = "You almost died! But you ate your sub, getting 25 health back!"
+                    message_display(message, "center")
+                else:
+                    running = False
+
             player_car.setFuel(-1)
             pg.time.wait(5000)
 
+
+    background1 = Background("project/road.jpg", [0, 0])
+    background1.pic = pg.transform.scale(background1.pic, (w, h))
+    display.blit(background1.pic, background1.box)
+    font = pg.font.Font('project/After_Shok.ttf', 64)
+    if player_car.is_dead():
+        title = font.render('You Died!', True, magenta)
+    else:
+        title = font.render('You Won!!!!!', True, magenta)
+    titlebox = title.get_rect()
+    titlebox.center = (w * .5, h * .5)
+
+    # put text box object on the center of the display object
+    display.blit(title, titlebox)
+
+    pg.display.update()
+    pg.time.wait(4000)
 
 # start game
 menu_screen()
