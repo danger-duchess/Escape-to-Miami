@@ -67,12 +67,11 @@ class Car:
 
     # position is purely based on speed
     def updatePosition(self, miles_covered=0):
+        if self.getCondition() is 0:
+            self._speed = 0.1
         self._position = self._position + self.getSpeed()
         if miles_covered != 0:
             self._position += miles_covered
-        else:
-            self._speed = 0.1
-            self._position = self._position + self.getSpeed()
 
     def randomAccident(self):
         r = randint(0, 5)
