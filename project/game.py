@@ -384,6 +384,7 @@ def game_loop():
                     space += 100
             if player_car.getCondition() == 0:
                 player_car.setHealth(-1)
+                player_car.setFuel(-player_car.getFuel())
             if player_car.getFuel() == 0:
                 player_car.setCondition(-player_car.getCondition())
             eventopt = randint(0, 1)
