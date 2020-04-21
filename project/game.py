@@ -330,7 +330,7 @@ def game_loop():
     turnend = False
     turns = 0
     i = 0
-    while running:
+      while running:
         # ways to quit game
         for event in pg.event.get():
             if event.type == pg.QUIT:
@@ -346,13 +346,13 @@ def game_loop():
         display.fill((0, 0, 0))
         # add first image for background
         if i < len(intro_script):
-            background1 = Background("shingle-creek-00.jpg", [0, 0])
+            background1 = Background("project/shingle-creek-00.jpg", [0, 0])
             background1.pic = pg.transform.scale(background1.pic, (w, h))
             display.blit(background1.pic, background1.box)
             message = intro_script[i]
             message_display(message, "center")
         if i == len(intro_script) and player_car.getPosition() != milesfrommiami:
-            background1 = Background("road.jpg", [0, 0])
+            background1 = Background("project/road.jpg", [0, 0])
             background1.pic = pg.transform.scale(background1.pic, (w, h))
             display.blit(background1.pic, background1.box)
             # displays all important info for Items
