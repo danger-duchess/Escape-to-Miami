@@ -17,6 +17,7 @@ from pygame.locals import (
     K_1,
     K_2,
     K_n,
+    K_i,
     QUIT, )
 
 # initialize pygame
@@ -175,11 +176,8 @@ def RandomEvent(n):
         elif r1 == 1:
             choice_dict = choice(true_random)
             script = choice_dict['script']
-            outcomes = choice_dict['outcomes']
             message_display(script, "center")
             true_random_outcome(choice_dict)
-
-    pg.display.update()
 
 
 # choice for player button 1
@@ -228,6 +226,7 @@ def player_choice1(event_dict):
                 player_car.getCondition(), milescovered)
     final_outcome = outcomes[outcome] + "" + result
     message_display(final_outcome, "center")
+    pg.display.update()
 
 
 # choice for player button 2
@@ -235,7 +234,6 @@ def player_choice2(event_dict):
     outcomes = event_dict['outcomes2']
     result = ''
     outcome = randint(0, 1)
-    print("You made it!")
     if event_dict['type'] == 'gas station':
         refuel = randint(0, 25)
         if outcome == 0:
@@ -267,6 +265,7 @@ def player_choice2(event_dict):
             result = "You are %d miles further from Miami" % milescovered
     final_outcome = outcomes[outcome] + " " + result
     message_display(final_outcome, "center")
+    pg.display.update()
 
 
 def true_random_outcome(event_dict):
@@ -276,7 +275,6 @@ def true_random_outcome(event_dict):
     condition = player_car.getCondition()
     health = player_car.getHealth()
     fuel = player_car.getFuel()
-    print("You made it!")
     if event_dict['type'] == "traffic jam":
         if outcome == 0:
             lostfuel = randint(0, 10)
@@ -318,12 +316,16 @@ def true_random_outcome(event_dict):
             result = "You lose %d health and %d condition" % (damage, con_lost)
     final_outcome = outcomes[outcome] + " " + result
     message_display(final_outcome, "center")
+    pg.display.update()
 
 
 def inventory_use():
     health = player_car.getHealth()
     condition = player_car.getCondition()
     fuel = player_car.getFuel()
+    result = ""
+    background = Background("trunk.jpg")
+    background.pic = pg.transform.scale(background.pic, (w, h))
     if condition < fuel and condition < health:
         if p_inventory.useItem("Spare Tire"):
             player_car.setCondition(25)
@@ -350,25 +352,45 @@ def inventory_use():
             pass
     else:
         result = "You have nothing to fix right now! You save your items for later."
+    message_display(result, "center")
+    pg.display.update()
 
 
 def inventory_display():
-    inventory_array, length = p_inventory
+    print("in inventory")
+    length, inventory_array = p_inventory.getInventory()
     items = []
-
+    background = Background("trunk.jpg", [0, 0])
+    background.pic = pg.transform.scale(background.pic, (w, h))
     if length == 0:
         message = "You have no items."
         message_display(message, "center")
-        return True
+        running = True
+        while running:
+            for events in pg.event.get():
+                if events.type == KEYDOWN:
+                    if events.key == K_n:
+                        game_loop()
+                        running = False
     else:
         for keys in inventory_array.keys():
             items.append(keys)
         names = str(items)
         message = "You have %d items, use one? Your items are %s" % (length, names)
         message_display(message, "center")
-        choice_button("Yes", 250, 450, 100, 50, white, inventory_use())
-        choice_button("No", 650, 450, 100, 50, white, game_loop())
-
+        choice_button("1. Yes", 250, 450, 100, 50, (255, 255, 0))
+        choice_button("2. No", 650, 450, 100, 50, (255, 255, 0))
+        running = True
+        while running:
+            for events in pg.event.get():
+                if events.type == KEYDOWN:
+                    if events.key == K_1:
+                        inventory_use()
+                        running = False
+                    if events.key == K_2:
+                        game_loop()
+                        running = False
+    pg.display.update()
 
 # function to define a button press, with dimensions, location, colors, and actions
 def button(text, x, y, width, height, presscolor, action=None):
@@ -401,7 +423,6 @@ def choice_button(text, x, y, width, height, presscolor, action=None):
         # button is pressed
         if click[0] == 1 and action is not None:
             action()
-            print("clicked!")
 
     # Render button boxes and text
     font2 = pg.font.SysFont('Arial', 15)
@@ -510,6 +531,10 @@ def game_loop():
                 nextTurn(turns)
                 pg.display.update()
                 turns += 1
+            elif event.key == K_i:
+                print("clicked!")
+                inventory_display()
+                pg.display.update()
 
         if player_car.getPosition() == milesfrommiami:
             win()
