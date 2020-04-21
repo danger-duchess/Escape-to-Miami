@@ -109,7 +109,7 @@ def message_display(text, align, offh=0, offw=0):
     message = font.render(text, True, (255, 255, 0))
     textRect = message.get_rect()
     if align == "center":
-        textRect.center = ((w * 0.5)+offw, (h * 0.5)+offh)
+        textRect.center = ((w * 0.5) + offw, (h * 0.5) + offh)
         display.blit(message, textRect)
     elif align == "right":
         display.blit(message, textRect)
@@ -251,6 +251,7 @@ def player_choice2(event_dict):
     final_outcome = outcomes[outcome] + " " + result
     message_display(final_outcome, "center")
 
+
 def true_random_outcome(event_dict):
     outcomes = event_dict['outcomes']
     result = ""
@@ -265,21 +266,21 @@ def true_random_outcome(event_dict):
             player_car.setFuel(-lostfuel)
             result = "You only lost %d fuel!" % lostfuel
         elif outcome == 1:
-            lostfuel = randint(0,50)
+            lostfuel = randint(0, 50)
             player_car.setFuel(-lostfuel)
             result = "You lost %d fuel. That sucks." % lostfuel
     elif event_dict['type'] == "alligator road":
         if outcome == 0:
             result = "It must be your lucky day!"
         elif outcome == 1:
-            bite = randint(0,35)
+            bite = randint(0, 35)
             player_car.setCondition(-bite)
             result = "You lose %d condition. Damn, that's a nasty bite!"
     else:
         if outcome == 0:
             if condition < fuel and condition < health:
-                if p_inventory.addItem("Spare Tire"):
-                    result = "You got a spare tire to fix your condition!"
+                if p_inventory.addItem("Florida Man Car Repair Coupon"):
+                    result = "You got a car repair coupon to fix your condition!"
                 else:
                     result = "Too bad. Your inventory is too full."
             elif fuel < health and fuel < condition:
@@ -300,16 +301,57 @@ def true_random_outcome(event_dict):
             result = "You lose %d health and %d condition" % (damage, con_lost)
     final_outcome = outcomes[outcome] + " " + result
     message_display(final_outcome, "center")
-'''def inventory_display():
+
+
+def inventory_use():
+    health = player_car.getHealth()
+    condition = player_car.getCondition()
+    fuel = player_car.getFuel()
+    if condition < fuel and condition < health:
+        if p_inventory.useItem("Spare Tire"):
+            player_car.setCondition(25)
+            result = "You use your spare tire to fix the car."
+        elif p_inventory.useItem("Florida Man Car Repair Coupon"):
+            player_car.setCondition(100)
+            result = "You use the Florida Man coupon! Your car is in tiptop shape!"
+        else:
+            pass
+    elif fuel < health and fuel < condition:
+        if p_inventory.useItem("Fuel Can"):
+            player_car.setFuel(25)
+            result = "You use a can of fuel to refuel your car!"
+        else:
+            pass
+    elif health < fuel and health < condition:
+        if p_inventory.addItem("Florida Orange"):
+            player_car.setHealth(15)
+            result = "You eat a juicy Florida orange to get your health back on track!"
+        elif p_inventory.useItem("Sub"):
+            player_car.setHealth(25)
+            result = "You eat that Sublix sub to restore your health!"
+        else:
+            pass
+    else:
+        result = "You have nothing to fix right now! You save your items for later."
+
+
+def inventory_display():
     inventory_array, length = p_inventory
+    items = []
+
     if length == 0:
         message = "You have no items."
         message_display(message, "center")
         return True
     else:
-        for i in length - 1:
-            items = str(inventory_array[i])
-            message = "You have %d items, use one? Your items are " % length'''
+        for keys in inventory_array.keys():
+            items.append(keys)
+        names = str(items)
+        message = "You have %d items, use one? Your items are %s" % (length, names)
+        message_display(message, "center")
+        choice_button("Yes", 250, 450, 100, 50, white, inventory_use())
+        choice_button("No", 650, 450, 100, 50, white, game_loop())
+
 
 
 # function to define a button press, with dimensions, location, colors, and actions
@@ -424,7 +466,6 @@ def intro_screen():
 
 # loop to run the actual game when begin button is pressed
 def game_loop():
-
     running = True
     turnend = False
     turns = 0
@@ -432,7 +473,7 @@ def game_loop():
     background1 = Background("road.jpg", [0, 0])
     background1.pic = pg.transform.scale(background1.pic, (w, h))
     display.blit(background1.pic, background1.box)
-    #pg.display.update()
+    # pg.display.update()
     i = 0
 
     while running:
@@ -543,6 +584,7 @@ def lose():
     pg.display.update()
     pg.time.wait(5000)
     menu_screen()
+
 
 # start game
 menu_screen()
