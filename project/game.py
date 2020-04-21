@@ -164,6 +164,7 @@ def RandomEvent(n):
             script = choice_dict['script']
             outcomes = choice_dict['outcomes']
             message_display(script, "center")
+            true_random_outcome(choice_dict)
 
 
 # choice for player button 1
@@ -219,7 +220,7 @@ def player_choice2(event_dict):
     outcomes = event_dict['outcomes2']
     result = ''
     outcome = randint(0, 1)
-
+    print("You made it!")
     if event_dict['type'] == 'gas station':
         refuel = randint(0, 25)
         if outcome == 0:
@@ -246,13 +247,61 @@ def player_choice2(event_dict):
         if outcome == 0:
             player_car.updatePosition(milescovered)
             result = "You are now %d miles closer to Miami" % milescovered
-        if outcome == 1:
+        elif outcome == 1:
             player_car.updatePosition(-milescovered)
             result = "You are %d miles further from Miami" % milescovered
     final_outcome = outcomes[outcome] + " " + result
     message_display(final_outcome, "center")
 
-
+def true_random_outcome(event_dict):
+    outcomes = event_dict['outcomes']
+    result = ""
+    outcome = randint(0, 1)
+    condition = player_car.getCondition()
+    health = player_car.getHealth()
+    fuel = player_car.getFuel()
+    print("You made it!")
+    if event_dict['type'] == "traffic jam":
+        if outcome == 0:
+            lostfuel = randint(0, 10)
+            player_car.setFuel(-lostfuel)
+            result = "You only lost %d fuel!" % lostfuel
+        elif outcome == 1:
+            lostfuel = randint(0,50)
+            player_car.setFuel(-lostfuel)
+            result = "You lost %d fuel. That sucks." % lostfuel
+    elif event_dict['type'] == "alligator road":
+        if outcome == 0:
+            result = "It must be your lucky day!"
+        elif outcome == 1:
+            bite = randint(0,35)
+            player_car.setCondition(-bite)
+            result = "You lose %d condition. Damn, that's a nasty bite!"
+    else:
+        if outcome == 0:
+            if condition < fuel and condition < health:
+                if p_inventory.addItem("Spare Tire"):
+                    result = "You got a spare tire to fix your condition!"
+                else:
+                    result = "Too bad. Your inventory is too full."
+            elif fuel < health and fuel < condition:
+                if p_inventory.addItem("Fuel Can"):
+                    result = "You get a can of fuel to refuel your car!"
+                else:
+                    result = "Too bad. Your inventory is too full."
+            elif health < fuel and health < condition:
+                if p_inventory.addItem("Florida Orange"):
+                    result = "You get a juicy Florida orange to get your health back on track!"
+                else:
+                    result = "Too bad. Your inventory is too full."
+        elif outcome == 1:
+            damage = randint(0, 25)
+            con_lost = randint(0, 25)
+            player_car.setHealth(-damage)
+            player_car.setCondition(-con_lost)
+            result = "You lose %d health and %d condition" % (damage, con_lost)
+    final_outcome = outcomes[outcome] + " " + result
+    message_display(final_outcome, "center")
 '''def inventory_display():
     inventory_array, length = p_inventory
     if length == 0:
@@ -296,6 +345,7 @@ def choice_button(text, x, y, width, height, presscolor, action=None):
         # button is pressed
         if click[0] == 1 and action is not None:
             action()
+            print("clicked!")
 
     # Render button boxes and text
     font2 = pg.font.SysFont('Arial', 15)
@@ -346,7 +396,7 @@ def game_loop():
     turnend = False
     turns = 0
     i = 0
-      while running:
+    while running:
         # ways to quit game
         for event in pg.event.get():
             if event.type == pg.QUIT:
