@@ -346,7 +346,7 @@ def game_loop():
     turnend = False
     turns = 0
     i = 0
-    while running:
+      while running:
         # ways to quit game
         for event in pg.event.get():
             if event.type == pg.QUIT:
@@ -362,26 +362,32 @@ def game_loop():
         display.fill((0, 0, 0))
         # add first image for background
         if i < len(intro_script):
-            background1 = Background("shingle-creek-00.jpg", [0, 0])
+            background1 = Background("project/shingle-creek-00.jpg", [0, 0])
             background1.pic = pg.transform.scale(background1.pic, (w, h))
             display.blit(background1.pic, background1.box)
             message = intro_script[i]
             message_display(message, "center")
         if i == len(intro_script) and player_car.getPosition() != milesfrommiami:
-            display.fill((0, 0, 0))
-            p_inventory.addItem("Chicken Nugget")
+            background1 = Background("project/road.jpg", [0, 0])
+            background1.pic = pg.transform.scale(background1.pic, (w, h))
+            display.blit(background1.pic, background1.box)
+            # displays all important info for Items
             message = "Turn " + str(turns)
             message_display(message, "topright")
             message = "Player Health: " + str(player_car.getHealth())
             message_display(message, "topleft")
             message = "Car Condition: " + str(player_car.getCondition())
             message_display(message, "topleft", 15)
-            message = "Car Fuel: " + str(player_car.getFuel()) + " official Florida unit per mile"
+            message = "Car Fuel: " + str(player_car.getFuel())
             message_display(message, "topleft", 30)
-            message = "Car Speed: " + str(player_car.getSpeed())
+            message = "Car Speed: " + str(player_car.getSpeed()) + " official Florida unit per mile"
             message_display(message, "topleft", 45)
             message = "Inventory: "
             message_display(message, "bottomleft", -45)
+            status = "You are " + str(
+                milesfrommiami - player_car.getPosition()) + " miles away from Miami"
+            message_display(status, "bottomright")
+            turns += 1
             i_amt, i_inv = p_inventory.getInventory()
             if i_amt == 0:
                 message = "Empty"
@@ -391,20 +397,16 @@ def game_loop():
                 message_display(message, "bottomleft", 0)
             if player_car.getCondition() == 0:
                 player_car.setHealth(-1)
+            if player_car.getFuel() == 0:
+                player_car.setCondition(-player_car.getCondition())
             eventopt = randint(0, 1)
             if eventopt == 0:
                 player_car.updatePosition()
-                # idk what we are setting it too
-                player_car.setFuel(1)
-                status = "You are " + str(
-                    milesfrommiami - player_car.getPosition()) + " miles away from Miami"
-                message_display(status, "bottomright")
-                turns += 1
                 turnend = True
             if eventopt == 1:
                 RandomEvent(randint(0, 1))
             player_car.setFuel(-1)
-            pg.time.wait(10000)
+            pg.time.wait(5000)
 
 
 # start game
