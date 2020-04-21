@@ -128,8 +128,6 @@ def message_display(text, align, offh=0, offw=0):
         textRect.topleft = (0 + offw, 0 + offh)
         display.blit(message, textRect)
 
-    pg.display.update()
-
 
 # class to create title screen background
 class Background(pg.sprite.Sprite):
@@ -419,26 +417,35 @@ def intro_screen():
 # loop to run the actual game when begin button is pressed
 def game_loop():
     running = True
-    # variable to iterate through intro
     turnend = False
     turns = 0
+    background1 = Background("road.jpg", [0, 0])
+    background1.pic = pg.transform.scale(background1.pic, (w, h))
+    display.blit(background1.pic, background1.box)
+    pg.display.update()
+    i = 0
 
     while running:
+        i += 1
         # ways to quit game
-        for event in pg.event.get():
-            if event.type == pg.QUIT:
-                game_quit()
-            if event.type == KEYDOWN:
-                if event.key == K_ESCAPE:
-                    running = False
+        event = pg.event.wait()
+        if event.type == pg.QUIT:
+            game_quit()
+        if event.type == KEYDOWN:
+            if event.key == K_ESCAPE:
+                running = False
+            if event.key == K_n:
+                turns += 1
+                pg.display.update()
 
         display.fill((0, 0, 0))
         # add first image for background
 
+        background1 = Background("road.jpg", [0, 0])
+        background1.pic = pg.transform.scale(background1.pic, (w, h))
+        display.blit(background1.pic, background1.box)
+
         if player_car.getPosition() != milesfrommiami:
-            background1 = Background("road.jpg", [0, 0])
-            background1.pic = pg.transform.scale(background1.pic, (w, h))
-            display.blit(background1.pic, background1.box)
             # displays all important info for Items
             message = "Turn " + str(turns)
             message_display(message, "topright")
@@ -468,6 +475,7 @@ def game_loop():
                 player_car.setFuel(-player_car.getFuel())
             if player_car.getFuel() == 0:
                 player_car.setCondition(-player_car.getCondition())
+
             eventopt = randint(0, 1)
             if eventopt == 0:
                 message = "What a beautiful day on I-75"
@@ -484,17 +492,18 @@ def game_loop():
                     running = False
 
             player_car.setFuel(-1)
-            pg.time.wait(5000)
+            if i == 1:
+                pg.display.update()
+            clock.tick(15)
 
 
-    background1 = Background("project/road.jpg", [0, 0])
+def win():
+    background1 = Background("road.jpg", [0, 0])
     background1.pic = pg.transform.scale(background1.pic, (w, h))
     display.blit(background1.pic, background1.box)
-    font = pg.font.Font('project/After_Shok.ttf', 64)
-    if player_car.is_dead():
-        title = font.render('You Died!', True, magenta)
-    else:
-        title = font.render('You Won!!!!!', True, magenta)
+    font = pg.font.Font('After_Shok.ttf', 64)
+
+    title = font.render('You Won!!!!!', True, magenta)
     titlebox = title.get_rect()
     titlebox.center = (w * .5, h * .5)
 
@@ -502,7 +511,16 @@ def game_loop():
     display.blit(title, titlebox)
 
     pg.display.update()
-    pg.time.wait(4000)
+
+def lose():
+    title = font.render('You Died!', True, magenta)
+    titlebox = title.get_rect()
+    titlebox.center = (w * .5, h * .5)
+
+    # put text box object on the center of the display object
+    display.blit(title, titlebox)
+
+    pg.display.update()
 
 # start game
 menu_screen()
