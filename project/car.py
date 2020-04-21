@@ -62,6 +62,9 @@ class Car:
         self._position = self._position + self.getSpeed()
         if miles_covered != 0:
             self._position += miles_covered
+        else:
+            self._speed = 0.1
+            self._position = self._position + self.getSpeed()
 
     def randomAccident(self):
         r = randint(0, 5)
@@ -86,7 +89,7 @@ class Car:
             return "You keep chugging along..."
 
     def is_dead(self):
-        if self._fuel == 0 or self._health == 0:
-            return True
+        if self._health == 0:
+            return True 
         else:
             return False
