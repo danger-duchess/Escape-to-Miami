@@ -382,19 +382,14 @@ def menu_screen():
         display.blit(title, titlebox)
 
         # display begin and quit buttons
-        button('Begin', 250, 450, 100, 50, white, game_loop)
+        button('Begin', 250, 450, 100, 50, white, intro_screen)
         button('Quit', 650, 450, 100, 50, white, game_quit)
 
         pg.display.update()
         clock.tick(15)
 
-
-# loop to run the actual game when begin button is pressed
-def game_loop():
+def intro_screen():
     running = True
-    # variable to iterate through intro
-    turnend = False
-    turns = 0
     i = 0
     while running:
         # ways to quit game
@@ -408,17 +403,40 @@ def game_loop():
                     # iterate through intro script until end is reached
                     if i < len(intro_script):
                         i += 1
+                    if i == len(intro_script):
+                        game_loop()
 
-        display.fill((0, 0, 0))
-        # add first image for background
         if i < len(intro_script):
-            background1 = Background("project/shingle-creek-00.jpg", [0, 0])
+            background1 = Background("shingle-creek-00.jpg", [0, 0])
             background1.pic = pg.transform.scale(background1.pic, (w, h))
             display.blit(background1.pic, background1.box)
             message = intro_script[i]
             message_display(message, "center")
-        if i == len(intro_script) and player_car.getPosition() != milesfrommiami:
-            background1 = Background("project/road.jpg", [0, 0])
+
+        pg.display.update()
+
+        clock.tick(15)
+# loop to run the actual game when begin button is pressed
+def game_loop():
+    running = True
+    # variable to iterate through intro
+    turnend = False
+    turns = 0
+
+    while running:
+        # ways to quit game
+        for event in pg.event.get():
+            if event.type == pg.QUIT:
+                game_quit()
+            if event.type == KEYDOWN:
+                if event.key == K_ESCAPE:
+                    running = False
+
+        display.fill((0, 0, 0))
+        # add first image for background
+
+        if player_car.getPosition() != milesfrommiami:
+            background1 = Background("road.jpg", [0, 0])
             background1.pic = pg.transform.scale(background1.pic, (w, h))
             display.blit(background1.pic, background1.box)
             # displays all important info for Items
