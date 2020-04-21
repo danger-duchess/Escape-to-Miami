@@ -37,6 +37,9 @@ class Inventory:
             else:
                 return False
 
+    # empties inventory on new game
+    def emptyInv(self):
+        self._inv.clear()
 
 # short test to see if all/most functions of inventory work
 if __name__ == "__main__":

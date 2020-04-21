@@ -14,6 +14,14 @@ class Car:
         self._speed = 1
         self._position = 0
 
+    # resets the players stats when game is started up (kind of a second constructor call)
+    def reset(self):
+        self._health = 100
+        self._fuel = 100
+        self._condition = 100
+        self._speed = 1
+        self._position = 0
+
     # next 6 functions all set and get certain private variables
     def getHealth(self):
         return self._health
