@@ -109,7 +109,7 @@ def message_display(text, align, offh=0, offw=0):
     message = font.render(text, True, (255, 255, 0))
     textRect = message.get_rect()
     if align == "center":
-        textRect.center = (w * 0.5, h * 0.5)
+        textRect.center = ((w * 0.5)+offw, (h * 0.5)+offh)
         display.blit(message, textRect)
     elif align == "right":
         display.blit(message, textRect)
@@ -386,6 +386,12 @@ def menu_screen():
         pg.display.update()
         clock.tick(15)
 
+
+def reset_stats():
+    player_car.reset()
+    p_inventory.emptyInv()
+
+
 def intro_screen():
     running = True
     i = 0
@@ -414,11 +420,15 @@ def intro_screen():
         pg.display.update()
 
         clock.tick(15)
+
+
 # loop to run the actual game when begin button is pressed
 def game_loop():
+
     running = True
     turnend = False
     turns = 0
+    reset_stats()
     background1 = Background("road.jpg", [0, 0])
     background1.pic = pg.transform.scale(background1.pic, (w, h))
     display.blit(background1.pic, background1.box)
@@ -495,7 +505,7 @@ def game_loop():
                 pg.display.update()
             if player_car.getPosition() == milesfrommiami:
                 win()
-            if player_car.getHealth == 0:
+            if player_car.is_dead():
                 lose()
 
             clock.tick(15)
@@ -516,15 +526,23 @@ def win():
 
     pg.display.update()
 
+
 def lose():
+    background1 = Background("road.jpg", [0, 0])
+    background1.pic = pg.transform.scale(background1.pic, (w, h))
+    display.blit(background1.pic, background1.box)
+    font = pg.font.Font('After_Shok.ttf', 64)
     title = font.render('You Died!', True, magenta)
     titlebox = title.get_rect()
     titlebox.center = (w * .5, h * .5)
+    message_display("You were " + str(233 - player_car.getPosition()) + " miles from Miami", "center", 150)
 
     # put text box object on the center of the display object
     display.blit(title, titlebox)
 
     pg.display.update()
+    pg.time.wait(5000)
+    menu_screen()
 
 # start game
 menu_screen()
