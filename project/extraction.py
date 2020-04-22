@@ -67,7 +67,3 @@ del(final_choices2[-3:])
 
 # create master list of choices
 final_choices = final_choices1 + final_choices2
-print(final_choices)
-
-# create random scenario
-scenario = "Oh no!  " + random.choice(final_choices2)
