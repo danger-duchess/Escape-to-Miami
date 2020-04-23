@@ -3,9 +3,9 @@ from random import randint
 from random import choice
 import random
 from pygame import font
-from extraction import final_choices2
-from car import Car
-from inventory import Inventory
+from project.extraction import final_choices2
+from project.car import Car
+from project.inventory import Inventory
 import textwrap
 
 from pygame.locals import (
@@ -19,6 +19,7 @@ from pygame.locals import (
     K_2,
     K_n,
     K_i,
+    K_c,
     QUIT, )
 
 # initialize pygame
@@ -414,10 +415,9 @@ def button(text, x, y, width, height, presscolor, action=None):
     elif x + width > cursor[0] > x and y + height > cursor[1] > y:
         pg.draw.rect(display, presscolor, (x, y, width, height))
         # button is pressed
-    if click[0] == 1 and action is not None:
-        action()
-
-    # Render button boxes and text
+        if click[0] == 1 and action is not None:
+            action()
+        # Render button boxes and text
     font2 = pg.font.Font('BOYCOTT_.ttf', 24)
     buttontext = font2.render(text, True, magenta)
     buttonbox = buttontext.get_rect()
@@ -474,6 +474,7 @@ def menu_screen():
         # display begin and quit buttons
         button('Begin', 250, 450, 100, 50, white, intro_screen)
         button('Quit', 650, 450, 100, 50, white, game_quit)
+        button('How to play', 450, 550, 100, 50, white, controls_screen)
 
         pg.display.update()
         clock.tick(15)
@@ -482,6 +483,40 @@ def menu_screen():
 def reset_stats():
     player_car.reset()
     p_inventory.emptyInv()
+
+
+def controls_screen():
+    running = True
+    pg.display.update()
+    while running:
+        # ways to quit game
+        for event in pg.event.get():
+            if event.type == pg.QUIT:
+                game_quit()
+            if event.type == pg.KEYDOWN:
+                if event.key == K_ESCAPE:
+                    menu_screen()
+
+        # display picture
+        display.fill((0, 0, 0))
+        background = Background('miami-sunset.jpg', [0, 0])
+        display.blit(background.pic, background.box)
+        button('Back', 450, 450, 100, 50, white, menu_screen)
+
+        message = 'Press n to move on'
+        message_display(message, 'center', -80)
+        message = 'Press 1 to choose option one'
+        message_display(message, 'center', -40)
+        message = 'Press 2 to choose option two'
+        message_display(message, 'center', 0)
+        message = 'Press i for inventory'
+        message_display(message, 'center', 40)
+        message = 'Press Esc to restart and go to menu screen'
+        message_display(message, 'center', 80)
+
+        pg.display.update()
+
+        clock.tick(15)
 
 
 def intro_screen():
