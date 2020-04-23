@@ -592,6 +592,9 @@ def info(turns):
     message_display(message, "topleft", 45)
     message = "Inventory: "
     message_display(message, "bottomleft", -45)
+    story = random.choice(final_choices2)
+    message = "The Daily News: " + story
+    message_display(message, "topleft", 65)
     status = "You are " + str(
         int(milesfrommiami - player_car.getPosition())) + " miles away from Miami"
     message_display(status, "bottomright")
