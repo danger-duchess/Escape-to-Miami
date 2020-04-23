@@ -4,8 +4,8 @@ from random import choice
 import random
 from pygame import font
 from extraction import final_choices2
-from project.car import Car
-from project.inventory import Inventory
+from car import Car
+from inventory import Inventory
 import textwrap
 
 from pygame.locals import (
@@ -385,17 +385,20 @@ def inventory_display():
         if length == 0:
             message = "You have no items."
             message_display(message, "center")
+            pg.display.update()
         else:
             for keys in inventory_array.keys():
                 items.append(keys)
-            names = str(items)
-            message = "You have %d items, use one? Your items are %s" % (length, names)
+            message = "You have %d items, use one? Your items are " % length
             message_display(message, "center")
+            message = items
+            message_display(message, 'center', 20)
             choice_button("1. Yes", 250, 450, black, 100, 50, (255, 255, 0))
             choice_button("2. No", 650, 450, black, 100, 50, (255, 255, 0))
+            pg.display.update()
             running = True
 
-        pg.display.update()
+
 
 
 # function to define a button press, with dimensions, location, colors, and actions
