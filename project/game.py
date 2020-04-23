@@ -173,7 +173,11 @@ def RandomEvent(n):
             # loop to let player choose option 1 or 2
             while running:
                 for events in pg.event.get():
+                    if events.type == pg.QUIT:
+                        quit()
                     if events.type == KEYDOWN:
+                        if events.key == K_ESCAPE:
+                            menu_screen()
                         if events.key == K_1:
                             player_choice1(choice_dict)
                             running = False
