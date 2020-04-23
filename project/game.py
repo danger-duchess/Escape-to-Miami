@@ -166,7 +166,11 @@ def RandomEvent(n):
             running = True
             while running:
                 for events in pg.event.get():
+                    if events.type == pg.QUIT:
+                        game_quit()
                     if events.type == KEYDOWN:
+                        if events.key == K_ESCAPE:
+                            game_quit()
                         if events.key == K_1:
                             player_choice1(choice_dict)
                             running = False
@@ -399,8 +403,6 @@ def inventory_display():
             running = True
 
 
-
-
 # function to define a button press, with dimensions, location, colors, and actions
 def button(text, x, y, width, height, presscolor, action=None):
     cursor = pg.mouse.get_pos()
@@ -514,20 +516,20 @@ def intro_screen():
 
 # loop to run the actual game when begin button is pressed
 def game_loop():
+    # pg.mixer.music.load('swamp.wav')
+    # pg.mixer.music.play(-1)
+
     running = True
-    turnend = False
     turns = 0
     reset_stats()
+
     background1 = Background("road.jpg", [0, 0])
     background1.pic = pg.transform.scale(background1.pic, (w, h))
     display.blit(background1.pic, background1.box)
-    # pg.display.update()
-    i = 0
+
     info(turns)
 
     while running:
-        i += 1
-
         background1 = Background("road.jpg", [0, 0])
         background1.pic = pg.transform.scale(background1.pic, (w, h))
         display.blit(background1.pic, background1.box)
