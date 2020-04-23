@@ -48,6 +48,8 @@ display = pg.display.set_mode([w, h])
 pg.display.set_caption('Escape to Miami')
 
 # import and resize picture of alligator
+gatorPic = pg.image.load('alligator.png')
+gatorPic = pg.transform.scale(gatorPic, (550, 500))
 
 # story script for first part of game
 intro_script = [
@@ -110,7 +112,6 @@ def message_display(text, align, offh=0, offw=0):
     font = pg.font.SysFont('Arial', 15)
     message = font.render(text, True, (255, 255, 0))
     textRect = message.get_rect()
-
     if align == "center":
         textRect.center = ((w * 0.5) + offw, (h * 0.5) + offh)
         display.blit(message, textRect)
@@ -149,41 +150,30 @@ def RandomEvent(n):
         message_display(player_car.issueRandom(), "center")
     elif n == 1:
         r1 = randint(0, 1)
-
         if r1 == 0:
             choice_dict = choice(choice_based)  # choose an index from the choice based ones
             script = choice_dict['script']
             choices = choice_dict['choices']
-
             font = pg.font.SysFont('Arial', 15)
             message = font.render(script, True, (255, 255, 0))
-
             textRect = message.get_rect()
             textRect.center = (w * .5, h * .5)
             display.blit(message, textRect)
-
             event = pg.event.wait()
-
             choice_button(choices[0],250, 450, black, 100, 50)
             choice_button(choices[1], 650, 450, black,  100, 50)
-
             pg.display.update()
-
             running = True
-            # loop to let player choose option 1 or 2
             while running:
                 for events in pg.event.get():
-                    if events.type == pg.QUIT:
-                        quit()
                     if events.type == KEYDOWN:
-                        if events.key == K_ESCAPE:
-                            menu_screen()
                         if events.key == K_1:
                             player_choice1(choice_dict)
                             running = False
                         if events.key == K_2:
                             player_choice2(choice_dict)
                             running = False
+
         elif r1 == 1:
             choice_dict = choice(true_random)
             script = choice_dict['script']
@@ -198,12 +188,12 @@ def player_choice1(event_dict):
     outcome = randint(0, 1)
 
     if event_dict['type'] == 'gas station':
-        refuel = randint(0, 25)
+        refuel = randint(1, 26)
         if outcome == 0:
-            player_car.setFuel(refuel)
+            player_car.setFuel(refuel+15)
             result = "You refilled your tank with %d units of gas." % refuel
         elif outcome == 1:
-            player_car.setFuel(-refuel)
+            player_car.setFuel(-refuel*2)
             result = "You lost %d units of gas." % refuel
     elif event_dict['type'] == 'Sublix':
         if outcome == 0:
@@ -213,7 +203,7 @@ def player_choice1(event_dict):
                 result = "A sub has been added to your inventory!"
                 p_inventory.addItem("sub")
         elif outcome == 1:
-            damage = randint(0, 25)
+            damage = randint(1, 26)
             player_car.setHealth(-damage)
             result = "You lost %d health." % damage
     elif event_dict['type'] == 'rest stop':
@@ -222,20 +212,19 @@ def player_choice1(event_dict):
             player_car.setCondition(fix)
             result = "Your car's condition is at %d percent!" % player_car.getCondition()
         elif outcome == 1:
-            fix = randint(0, 50)
+            fix = randint(1, 51)
             player_car.setCondition(-fix)
             result = "Your car's condition is at %d percent!" % player_car.getCondition()
     else:
-        milescovered = randint(0, 20)
+        milescovered = randint(1, 21)
         if outcome == 0:
             player_car.updatePosition(milescovered)
             result = "You are now %d miles closer to Miami." % milescovered
         if outcome == 1:
-            condition = randint(0, 25)
+            condition = randint(1, 26)
             player_car.setCondition(-condition)
             result = "Your car is at %d condition, but you are %d miles closer to Miami." % (
                 player_car.getCondition(), milescovered)
-
     final_outcome = outcomes[outcome] + "" + result
     message_display(final_outcome, "center", 20)
     pg.display.update()
@@ -246,9 +235,8 @@ def player_choice2(event_dict):
     outcomes = event_dict['outcomes2']
     result = ''
     outcome = randint(0, 1)
-
     if event_dict['type'] == 'gas station':
-        refuel = randint(0, 25)
+        refuel = randint(0, 26)
         if outcome == 0:
             pass
         elif outcome == 1:
@@ -258,31 +246,29 @@ def player_choice2(event_dict):
         if outcome == 0:
             pass
         elif outcome == 1:
-            damage = randint(0, 25)
+            damage = randint(1, 26)
             player_car.setHealth(-damage)
             result = "You take %d health loss as a result." % damage
     elif event_dict['type'] == 'rest stop':
         if outcome == 0:
             pass
         elif outcome == 1:
-            fix = randint(0, 50)
+            fix = randint(0, 51)
             player_car.setCondition(-fix)
             result = "Your car's condition is at %d percent!" % player_car.getCondition()
     else:
-        milescovered = randint(0, 20)
+        milescovered = randint(0, 21)
         if outcome == 0:
             player_car.updatePosition(milescovered)
             result = "You are now %d miles closer to Miami." % milescovered
         elif outcome == 1:
             player_car.updatePosition(-milescovered)
             result = "You are %d miles further from Miami." % milescovered
-
     final_outcome = outcomes[outcome] + " " + result
     message_display(final_outcome, "center", 20)
     pg.display.update()
 
 
-# function for random event and choosing random outcome
 def true_random_outcome(event_dict):
     outcomes = event_dict['outcomes']
     result = ""
@@ -290,7 +276,6 @@ def true_random_outcome(event_dict):
     condition = player_car.getCondition()
     health = player_car.getHealth()
     fuel = player_car.getFuel()
-
     if event_dict['type'] == "traffic jam":
         if outcome == 0:
             lostfuel = randint(0, 10)
@@ -330,19 +315,16 @@ def true_random_outcome(event_dict):
             player_car.setHealth(-damage)
             player_car.setCondition(-con_lost)
             result = "You lose %d health and %d condition." % (damage, con_lost)
-
     final_outcome = outcomes[outcome] + " " + result
     message_display(final_outcome, "center", 25)
     pg.display.update()
 
 
-# function to use items in inventory
 def inventory_use():
     health = player_car.getHealth()
     condition = player_car.getCondition()
     fuel = player_car.getFuel()
     result = ""
-    # display different background photo
     background = Background("trunk.jpg", [0,0])
     background.pic = pg.transform.scale(background.pic, (w, h))
     display.blit(background.pic, background.box)
@@ -373,23 +355,19 @@ def inventory_use():
             pass
     else:
         result = "You have nothing to fix right now! You save your items for later."
-
     message_display(result, "center", 20)
     pg.display.update()
 
 
-# function for inventory screen
 def inventory_display():
     print("in inventory")
     length, inventory_array = p_inventory.getInventory()
     items = []
-    # display different background photo
     background = Background("trunk.jpg", [0, 0])
     background.pic = pg.transform.scale(background.pic, (w, h))
     display.blit(background.pic, background.box)
 
     running = True
-    # main loop
     while running:
         for events in pg.event.get():
             if events.type == pg.QUIT:
@@ -420,7 +398,7 @@ def inventory_display():
         pg.display.update()
 
 
-# functions to define a button press, with dimensions, location, colors, and actions
+# function to define a button press, with dimensions, location, colors, and actions
 def button(text, x, y, width, height, presscolor, action=None):
     cursor = pg.mouse.get_pos()
     click = pg.mouse.get_pressed()
@@ -496,13 +474,11 @@ def menu_screen():
         clock.tick(15)
 
 
-# reset the numbers when the player restarts the game
 def reset_stats():
     player_car.reset()
     p_inventory.emptyInv()
 
 
-# function for the introduction script of the game
 def intro_screen():
     running = True
     i = 0
@@ -513,8 +489,6 @@ def intro_screen():
                 game_quit()
             if event.type == KEYDOWN:
                 if event.key == K_ESCAPE:
-                    reset_stats()
-                    menu_screen()
                     running = False
                 if event.key == K_n:
                     # iterate through intro script until end is reached
@@ -523,7 +497,6 @@ def intro_screen():
                     if i == len(intro_script):
                         game_loop()
 
-        # iterate through intro script as user presses n
         if i < len(intro_script):
             background1 = Background("shingle-creek-00.jpg", [0, 0])
             background1.pic = pg.transform.scale(background1.pic, (w, h))
@@ -539,51 +512,47 @@ def intro_screen():
 # loop to run the actual game when begin button is pressed
 def game_loop():
     running = True
+    turnend = False
     turns = 0
     reset_stats()
     background1 = Background("road.jpg", [0, 0])
     background1.pic = pg.transform.scale(background1.pic, (w, h))
     display.blit(background1.pic, background1.box)
+    # pg.display.update()
+    i = 0
     info(turns)
 
     while running:
-        # display main background photo
+        i += 1
+
         background1 = Background("road.jpg", [0, 0])
         background1.pic = pg.transform.scale(background1.pic, (w, h))
         display.blit(background1.pic, background1.box)
 
-        # event options
+        # add first image for background
         event = pg.event.wait()
+        # ways to quit game
         if event.type == pg.QUIT:
             game_quit()
         if event.type == KEYDOWN:
-            if event.key == K_ESCAPE:
-                reset_stats()
-                menu_screen()
-            # player presses n to continue
             if event.key == K_n:
                 nextTurn(turns)
                 pg.display.update()
                 turns += 1
-            # player presses i for inventory
             elif event.key == K_i:
                 print("clicked!")
                 inventory_display()
                 pg.display.update()
 
-        # winning the game
-        if int(player_car.getPosition()) == milesfrommiami:
-            running = False
+        if player_car.getPosition() == milesfrommiami:
             win()
-        # losing the game
         if player_car.is_dead():
             running = False
             lose()
 
 
-# print out information for the screen on each turn
 def nextTurn(turns):
-    if int(player_car.getPosition()) != milesfrommiami:
+    if player_car.getPosition() != milesfrommiami:
         info(turns)
         if player_car.getCondition() == 0:
             player_car.setHealth(-1)
@@ -613,32 +582,22 @@ def info(turns):
     # displays all important info for Items
     message = "Turn " + str(turns)
     message_display(message, "topright")
-
     message = "Player Health: " + str(player_car.getHealth())
     message_display(message, "topleft")
-
     message = "Car Condition: " + str(player_car.getCondition())
     message_display(message, "topleft", 15)
-
     message = "Car Fuel: " + str(player_car.getFuel())
     message_display(message, "topleft", 30)
-
     message = "Car Speed: " + str(player_car.getSpeed()) + " official Florida unit per mile"
     message_display(message, "topleft", 45)
-
     message = "Inventory: "
     message_display(message, "bottomleft", -45)
-
-    # show random news story
     story = random.choice(final_choices2)
     message = "The Daily News: " + story
     message_display(message, "topleft", 65)
-
     status = "You are " + str(
         int(milesfrommiami - player_car.getPosition())) + " miles away from Miami"
     message_display(status, "bottomright")
-
-    # print inventory information
     i_amt, i_inv = p_inventory.getInventory()
     if i_amt == 0:
         message = "Empty"
@@ -648,7 +607,6 @@ def info(turns):
         message_display(message, "bottomleft", 0)
 
 
-# function going to win screen
 def win():
     background1 = Background("road.jpg", [0, 0])
     background1.pic = pg.transform.scale(background1.pic, (w, h))
@@ -664,18 +622,15 @@ def win():
     pg.display.update()
 
 
-# function for losing screen
 def lose():
     background1 = Background("road.jpg", [0, 0])
     background1.pic = pg.transform.scale(background1.pic, (w, h))
     display.blit(background1.pic, background1.box)
     font = pg.font.Font('After_Shok.ttf', 64)
-
     title = font.render('You Died!', True, magenta)
     titlebox = title.get_rect()
     titlebox.center = (w * .5, h * .5)
-
-    message_display("You were " + str(int(223 - player_car.getPosition())) + " miles from Miami", "center", 150)
+    message_display("You were " + str(223 - player_car.getPosition()) + " miles from Miami", "center", 150)
 
     # put text box object on the center of the display object
     display.blit(title, titlebox)
