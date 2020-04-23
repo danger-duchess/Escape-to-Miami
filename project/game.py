@@ -589,7 +589,7 @@ def nextTurn(turns):
 
         eventopt = randint(0, 1)
         if eventopt == 0:
-            message = "What a beautiful day on I-75."
+            message = "What a beautiful day on I-95."
             message_display(message, "center")
             player_car.updatePosition()
         if eventopt == 1:
